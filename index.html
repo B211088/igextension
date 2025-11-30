@@ -243,39 +243,40 @@
             }
         }
 
-        function extractStats() {
+       function extractStats() {
             const input = document.getElementById('socialInput').value;
             const resultDiv = document.getElementById('statsResult');
-            
+
             if (!input.trim()) {
                 resultDiv.textContent = 'Vui lòng nhập text!';
                 resultDiv.className = 'result error';
                 resultDiv.style.display = 'block';
                 return;
             }
-            
-            // Tìm tất cả các số trong text
-            const numbers = input.match(/\d+/g);
-            
+
+            // Lấy số có dấu phẩy hoặc dấu chấm
+            const numbers = input.match(/[\d.,]+/g);
+
             if (!numbers || numbers.length < 3) {
                 resultDiv.textContent = 'Không tìm thấy đủ 3 số! Cần ít nhất 3 số trong text.';
                 resultDiv.className = 'result error';
                 resultDiv.style.display = 'block';
                 return;
             }
-            
-    
-            const post = numbers[0];
-            const followers = numbers[1];
-            const following = numbers[2];
-            
-            const result = `${post} posts|${followers} followers|${following} follwing`;
-            
+
+            // Chuẩn hoá: bỏ dấu phẩy và chấm => 3,000 -> 3000
+            const normalize = (num) => num.replace(/[.,]/g, "");
+
+            const post = normalize(numbers[0]);
+            const followers = normalize(numbers[1]);
+            const following = normalize(numbers[2]);
+
+            const result = `${post} posts|${followers} followers|${following} following`;
+
             resultDiv.textContent = result;
             resultDiv.className = 'result';
             resultDiv.style.display = 'block';
-            
-          
+
             navigator.clipboard.writeText(result).then(() => {
                 showNotification('✅ Đã tạo và copy stats!');
             });
